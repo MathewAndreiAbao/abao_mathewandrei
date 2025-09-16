@@ -28,7 +28,9 @@
         <div class="card p-4 p-md-5 mb-4">
           <div class="d-flex align-items-center gap-3">
             <?php 
-              $avatar = !empty($user['avatar']) ? $user['avatar'] : (PUBLIC_DIR . '/default-avatar.svg');
+              $avatar = !empty($user['avatar']) 
+                ? (BASE_URL . $user['avatar']) 
+                : (BASE_URL . PUBLIC_DIR . '/default-avatar.svg');
             ?>
             <img src="<?= htmlspecialchars($avatar); ?>" class="avatar" alt="Avatar">
             <div>
