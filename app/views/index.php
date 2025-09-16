@@ -1,11 +1,8 @@
-Here is the complete previous version of `app/views/index.php` as it was before commit `72d295ef335d573f1cb2398a5ba639922dc2ede7`.  
-You can copy and replace your current file contents with this to restore the last version and remove all new/modified lines.
-
-```php
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loan Management</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -80,9 +77,9 @@ You can copy and replace your current file contents with this to restore the las
             <tr>
               <th>Borrower Name</th>
               <th>Loan Amount</th>
-              <th>Interest Rate</th>
-              <th>Date Created</th>
-              <th>Last Updated</th>
+              <th>Interest Rate (%)</th>
+              <th>Created At</th>
+              <th>Updated At</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -101,7 +98,7 @@ You can copy and replace your current file contents with this to restore the las
                   </td>
                 </tr>
 
-                <!-- Edit Modal -->
+
                 <div class="modal fade" id="editModal<?= $loan['id']; ?>" tabindex="-1">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -118,11 +115,11 @@ You can copy and replace your current file contents with this to restore the las
                           </div>
                           <div class="mb-3">
                             <label class="form-label">Loan Amount</label>
-                            <input type="number" name="loan_amount" class="form-control" value="<?= htmlspecialchars($loan['loan_amount']); ?>" step="0.01" required>
+                            <input type="number" name="loan_amount" class="form-control" value="<?= $loan['loan_amount']; ?>" step="0.01" required>
                           </div>
                           <div class="mb-3">
                             <label class="form-label">Interest Rate (%)</label>
-                            <input type="number" name="interest_rate" class="form-control" value="<?= htmlspecialchars($loan['interest_rate']); ?>" step="0.01" required>
+                            <input type="number" name="interest_rate" class="form-control" value="<?= $loan['interest_rate']; ?>" step="0.01" required>
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -134,7 +131,7 @@ You can copy and replace your current file contents with this to restore the las
                   </div>
                 </div>
 
-                <!-- Delete Modal -->
+
                 <div class="modal fade" id="deleteModal<?= $loan['id']; ?>" tabindex="-1">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -167,6 +164,37 @@ You can copy and replace your current file contents with this to restore the las
     </div>
 
     <div id="pagination" class="d-flex justify-content-center mt-3"></div>
+  </div>
+
+  <div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form action="/create-loan" method="POST">
+          <div class="modal-header bg-success text-white rounded-top">
+            <h5 class="modal-title">Add Loan</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Borrower Name</label>
+              <input type="text" name="borrower_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Loan Amount</label>
+              <input type="number" name="loan_amount" class="form-control" step="0.01" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Interest Rate (%)</label>
+              <input type="number" name="interest_rate" class="form-control" step="0.01" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-custom">Add</button>
+            <button type="button" class="btn btn-light btn-custom" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -225,6 +253,7 @@ You can copy and replace your current file contents with this to restore the las
         const pageCount = Math.min(Math.ceil(matchingRows.length / rowsPerPage), maxPages);
         pagination.innerHTML = '';
 
+
         const prevBtn = document.createElement('button');
         prevBtn.classList.add('btn', 'btn-outline-primary', 'mx-1');
         prevBtn.textContent = 'Previous';
@@ -262,6 +291,3 @@ You can copy and replace your current file contents with this to restore the las
   </script>
 </body>
 </html>
-```
-
-Let me know if you need a commit message, help with restoring via Git, or want this applied to a different file!
