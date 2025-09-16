@@ -6,73 +6,50 @@
   <title>Loan Management</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      background-color: #f4f6f9;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .page-header {
-      margin-bottom: 30px;
-    }
-    .card {
-      border: none;
-      border-radius: 12px;
-    }
-    .table thead {
-      background-color: #0d6efd;
-      color: #fff;
-    }
-    .table {
-      table-layout: fixed;
-      width: 100%;
-    }
-    .table th:nth-child(1), .table td:nth-child(1) { width: 20%; }
-    .table th:nth-child(2), .table td:nth-child(2) { width: 20%; }
-    .table th:nth-child(3), .table td:nth-child(3) { width: 15%; }
-    .table th:nth-child(4), .table td:nth-child(4) { width: 20%; }
-    .table th:nth-child(5), .table td:nth-child(5) { width: 20%; }
-    .table th:nth-child(6), .table td:nth-child(6) { width: 25%; }
-    .btn-custom {
-      border-radius: 8px;
-      font-weight: 500;
-    }
-    .modal-content {
-      border-radius: 12px;
-    }
-    .modal-header {
-      border-bottom: none;
-    }
-    .modal-footer {
-      border-top: none;
-    }
+    body { background-color: #f4f6f9; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    .card { border: none; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #ddd; }
+    .profile-card { background: white; padding: 20px; margin-bottom: 30px; }
+    .table thead { background-color: #0d6efd; color: white; }
+    .btn-custom { border-radius: 8px; }
   </style>
 </head>
 <body>
-
   <div class="container py-5">
-
-    <div class="page-header text-center">
-      <h2 class="fw-bold text-dark">Loan Management</h2>
-      <p class="text-muted">Add, edit, and manage your loan records efficiently.</p>
-    </div>
-
-    <div class="mb-3">
-      <?php getErrors(); ?>
-      <?php getMessage(); ?>
-    </div>
-
-    <div class="d-flex justify-content-between mb-3">
-      <div class="input-group w-50">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by borrower name...">
-        <button id="searchButton" class="btn btn-primary btn-custom shadow-sm" type="button">Search</button>
+    <!-- Profile Section with Upload/Modify Picture and Logout -->
+    <div class="profile-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Your Profile</h4>
+        <form action="/logout" method="POST">
+          <button class="btn btn-outline-danger btn-custom" type="submit">Logout</button>
+        </form>
       </div>
-      <button class="btn btn-primary btn-custom shadow-sm" data-bs-toggle="modal" data-bs-target="#addModal">
-        Add Loan
-      </button>
+      <div class="d-flex align-items-center gap-3">
+        <img src="<?= htmlspecialchars($user['avatar'] ? BASE_URL . $user['avatar'] : BASE_URL . '/default-avatar.svg'); ?>" class="avatar" alt="Avatar">
+        <div>
+          <h5><?= htmlspecialchars($user['name']); ?></h5>
+          <p class="text-muted"><?= htmlspecialchars($user['email']); ?></p>
+        </div>
+      </div>
+      <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="mt-3">
+        <div class="input-group">
+          <input type="file" name="avatar" class="form-control" accept="image/*" required>
+          <button class="btn btn-outline-primary btn-custom" type="submit">Upload/Modify Picture</button>
+        </div>
+      </form>
     </div>
 
-    <div class="card shadow-sm">
-      <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0 text-center">
+    <!-- Messages -->
+    <div class="mb-3"><?php getErrors(); ?><?php getMessage(); ?></div>
+
+    <!-- Loan Management -->
+    <h2 class="text-center mb-4">Loan Management</h2>
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#addModal">Add Loan</button>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-hover">
           <thead>
             <tr>
               <th>Borrower Name</th>
@@ -86,29 +63,28 @@
           <tbody>
             <?php if (!empty($loans)): ?>
               <?php foreach ($loans as $loan): ?>
-                <tr class="data-row">
+                <tr>
                   <td><?= htmlspecialchars($loan['borrower_name']); ?></td>
                   <td>₱<?= number_format($loan['loan_amount'], 2); ?></td>
-                  <td><?= htmlspecialchars($loan['interest_rate']); ?>%</td>
+                  <td><?= htmlspecialchars($loan['interest_rate']); ?></td>
                   <td><?= htmlspecialchars($loan['created_at']); ?></td>
                   <td><?= htmlspecialchars($loan['updated_at']); ?></td>
                   <td>
-                    <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editModal<?= $loan['id']; ?>">Edit</button>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= $loan['id']; ?>">Edit</button>
                     <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $loan['id']; ?>">Delete</button>
                   </td>
                 </tr>
 
-
+                <!-- Edit Modal -->
                 <div class="modal fade" id="editModal<?= $loan['id']; ?>" tabindex="-1">
-                  <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-dialog">
                     <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Edit Loan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
                       <form action="/update-loan/<?= $loan['id']; ?>" method="POST">
-                        <div class="modal-header bg-primary text-white rounded-top">
-                          <h5 class="modal-title">Edit Loan</h5>
-                          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
                         <div class="modal-body">
-                          <input type="hidden" name="id" value="<?= $loan['id']; ?>">
                           <div class="mb-3">
                             <label class="form-label">Borrower Name</label>
                             <input type="text" name="borrower_name" class="form-control" value="<?= htmlspecialchars($loan['borrower_name']); ?>" required>
@@ -123,39 +99,38 @@
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="submit" class="btn btn-primary btn-custom">Update</button>
-                          <button type="button" class="btn btn-light btn-custom" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Update</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         </div>
                       </form>
                     </div>
                   </div>
                 </div>
 
-
+                <!-- Delete Modal -->
                 <div class="modal fade" id="deleteModal<?= $loan['id']; ?>" tabindex="-1">
-                  <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-dialog">
                     <div class="modal-content">
-                      <form action="/delete-loan/<?= $loan['id']; ?>" method="POST">
-                        <div class="modal-header bg-danger text-white rounded-top">
-                          <h5 class="modal-title">Delete Loan</h5>
-                          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p>Are you sure you want to delete the loan for <strong><?= htmlspecialchars($loan['borrower_name']); ?></strong>?</p>
-                          <input type="hidden" name="id" value="<?= $loan['id']; ?>">
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-danger btn-custom">Delete</button>
-                          <button type="button" class="btn btn-light btn-custom" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                      </form>
+                      <div class="modal-header">
+                        <h5 class="modal-title">Delete Loan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to delete this loan?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <form action="/delete-loan/<?= $loan['id']; ?>" method="POST">
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               <?php endforeach; ?>
             <?php else: ?>
-              <tr class="no-results">
-                <td colspan="6" class="text-muted">No loans found.</td>
+              <tr>
+                <td colspan="6" class="text-center text-muted">No loans found.</td>
               </tr>
             <?php endif; ?>
           </tbody>
@@ -163,131 +138,38 @@
       </div>
     </div>
 
-    <div id="pagination" class="d-flex justify-content-center mt-3"></div>
-  </div>
-
-  <div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <form action="/create-loan" method="POST">
-          <div class="modal-header bg-success text-white rounded-top">
+    <!-- Add Loan Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
             <h5 class="modal-title">Add Loan</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label">Borrower Name</label>
-              <input type="text" name="borrower_name" class="form-control" required>
+          <form action="/create-loan" method="POST">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Borrower Name</label>
+                <input type="text" name="borrower_name" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Loan Amount</label>
+                <input type="number" name="loan_amount" class="form-control" step="0.01" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Interest Rate (%)</label>
+                <input type="number" name="interest_rate" class="form-control" step="0.01" required>
+              </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Loan Amount</label>
-              <input type="number" name="loan_amount" class="form-control" step="0.01" required>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Add</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Interest Rate (%)</label>
-              <input type="number" name="interest_rate" class="form-control" step="0.01" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success btn-custom">Add</button>
-            <button type="button" class="btn btn-light btn-custom" data-bs-dismiss="modal">Cancel</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= BASE_URL; ?>/public/js/alert.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const rowsPerPage = 6;
-      const maxPages = 10;
-      const allRows = document.querySelectorAll('.data-row');
-      const noResults = document.querySelector('.no-results');
-      const searchInput = document.getElementById('searchInput');
-      const pagination = document.getElementById('pagination');
-      let matchingRows = [];
-      let currentPage = 1;
-
-      function updateTable() {
-        const filter = searchInput.value.toLowerCase();
-        matchingRows = [];
-        allRows.forEach(row => {
-          const name = row.cells[0].textContent.toLowerCase();
-          if (name.includes(filter)) {
-            matchingRows.push(row);
-          }
-          row.style.display = 'none';
-        });
-
-        if (matchingRows.length === 0) {
-          if (noResults) noResults.style.display = '';
-        } else {
-          if (noResults) noResults.style.display = 'none';
-        }
-
-        buildPagination();
-        showPage(1);
-      }
-
-      function showPage(page) {
-        currentPage = page;
-        const start = (page - 1) * rowsPerPage;
-        const end = Math.min(start + rowsPerPage, matchingRows.length);
-        matchingRows.forEach((row, index) => {
-          row.style.display = (index >= start && index < end) ? '' : 'none';
-        });
-
-        pagination.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = pagination.querySelector(`button[data-page="${page}"]`);
-        if (activeBtn) activeBtn.classList.add('active');
-
-        const prevBtn = pagination.querySelector('button:first-child');
-        const nextBtn = pagination.querySelector('button:last-child');
-        if (prevBtn) prevBtn.disabled = currentPage === 1;
-        if (nextBtn) nextBtn.disabled = currentPage === Math.min(Math.ceil(matchingRows.length / rowsPerPage), maxPages);
-      }
-
-      function buildPagination() {
-        const pageCount = Math.min(Math.ceil(matchingRows.length / rowsPerPage), maxPages);
-        pagination.innerHTML = '';
-
-
-        const prevBtn = document.createElement('button');
-        prevBtn.classList.add('btn', 'btn-outline-primary', 'mx-1');
-        prevBtn.textContent = 'Previous';
-        prevBtn.disabled = currentPage === 1;
-        prevBtn.addEventListener('click', () => {
-          if (currentPage > 1) showPage(currentPage - 1);
-        });
-        pagination.appendChild(prevBtn);
-
-        for (let i = 1; i <= pageCount; i++) {
-          const btn = document.createElement('button');
-          btn.classList.add('btn', 'btn-outline-primary', 'mx-1');
-          btn.textContent = i;
-          btn.dataset.page = i;
-          if (i === currentPage) btn.classList.add('active');
-          btn.addEventListener('click', () => showPage(i));
-          pagination.appendChild(btn);
-        }
-
-        const nextBtn = document.createElement('button');
-        nextBtn.classList.add('btn', 'btn-outline-primary', 'mx-1');
-        nextBtn.textContent = 'Next';
-        nextBtn.disabled = currentPage === pageCount;
-        nextBtn.addEventListener('click', () => {
-          if (currentPage < pageCount) showPage(currentPage + 1);
-        });
-        pagination.appendChild(nextBtn);
-      }
-
-      updateTable();
-
-      const searchButton = document.getElementById('searchButton');
-      searchButton.addEventListener('click', updateTable);
-    });
-  </script>
 </body>
 </html>
