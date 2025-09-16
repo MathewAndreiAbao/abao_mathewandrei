@@ -1,4 +1,5 @@
 <?php
+// File: app/controllers/Profile_Controller.php
 defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 
 class Profile_Controller extends Controller {
@@ -22,12 +23,16 @@ class Profile_Controller extends Controller {
             return;
         }
 
-        $uploads_path = ROOT_DIR . PUBLIC_DIR . '/uploads/avatars/';
+        $uploads_path = ROOT_DIR . '/tmp/uploads/avatars'; // Use /tmp for Render compatibility
         if (!is_dir($uploads_path)) {
-            mkdir($uploads_path, 0777, true);
+            if (!mkdir($uploads_path, 0755, true)) {
+                setErrors(['Failed to create upload directory.']);
+                redirect('/');
+                return;
+            }
         }
         if (!is_writable($uploads_path)) {
-            setErrors(['Upload directory is not writable.']);
+            setErrors(['Upload directory is not writable. Check server permissions.']);
             redirect('/');
             return;
         }
@@ -47,15 +52,15 @@ class Profile_Controller extends Controller {
         }
 
         $filename = $upload->get_filename();
-        $relative = '/uploads/avatars/' . $filename;  // Relative to public dir
-        $user_id = $this->session->userdata('user_id');
+        $relative = '/tmp/uploads/avatars/' . $filename; // Relative path for Render
 
-        // Remove old avatar if exists
+        $user_id = $this->session->userdata('user_id');
         $current = $this->User_Model->find($user_id);
+
         if ($current && !empty($current['avatar'])) {
-            $old_path = ROOT_DIR . PUBLIC_DIR . $current['avatar'];
+            $old_path = ROOT_DIR . $current['avatar'];
             if (file_exists($old_path)) {
-                unlink($old_path);
+                @unlink($old_path);
             }
         }
 
