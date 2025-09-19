@@ -10,7 +10,7 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 */
 
 $config['VERSION']                 = '4.2.2';
-$config['ENVIRONMENT']             = 'testing';
+$config['ENVIRONMENT']             = 'development';
 $config['base_url']                = '';
 $config['index_page']              = 'index.php';
 $config['log_threshold']           = 0;
