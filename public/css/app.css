@@ -1,0 +1,168 @@
+/* App custom styles - Dark / Night Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  /* Monochrome palette: black, white and grays */
+  --bg: #fbfbfb;            /* very light neutral */
+  --surface: #ffffff;       /* white cards and surfaces */
+  --muted: #888888;         /* muted gray text */
+  --text: #0b0b0b;          /* near-black primary text */
+  --accent: #0b0b0b;        /* primary accent uses black for CTA */
+  --accent-2: #4b4b4b;      /* secondary neutral */
+  --radius-lg: 8px;
+  --shadow-1: none;
+}
+
+html,body{height:100%;}
+body{
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  /* header removed: remove large top padding that compensated for a fixed navbar */
+  padding-top: 18px;
+}
+
+.navbar-brand { font-weight:700; letter-spacing:0.2px; color:var(--text); font-size:1.05rem; }
+.app-container{max-width:1200px}
+.card{border-radius:var(--radius-lg); background:var(--surface); border:1px solid rgba(16,24,40,0.04)}
+.card.h-100{box-shadow:none}
+.task-title{font-size:1.05rem; font-weight:700; color:var(--text)}
+.task-meta{font-size:0.82rem; color:var(--muted)}
+.form-card{max-width:520px;margin:0 auto;border-radius:12px;background:var(--surface);padding:20px;box-shadow:var(--shadow-1)}
+.footer-note{text-align:center;margin-top:30px;color:var(--muted)}
+.bg-gradient-primary{background:linear-gradient(90deg,#f8fafc,#eef2ff)!important}
+.navbar{padding-top:0.6rem;padding-bottom:0.6rem;box-shadow:0 2px 6px rgba(16,24,40,0.04);border-bottom:1px solid rgba(16,24,40,0.04)}
+.navbar .nav-link{color:var(--muted);margin-left:.35rem;margin-right:.35rem}
+.navbar .nav-link:hover{color:var(--text);background:transparent}
+.navbar .nav-link.active{color:var(--text);font-weight:600}
+.navbar-toggler{border-color:rgba(16,24,40,0.06)}
+.btn-outline-secondary{border-color:rgba(16,24,40,0.06);color:var(--text);background:transparent}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:white}
+
+/* Inputs */
+.form-control { background: #ffffff; border: 1px solid rgba(15,23,36,0.06); color: var(--text); }
+.form-control::placeholder { color: #9aa7b2; }
+.form-label { color: var(--muted); font-weight:600; }
+
+/* Task card details */
+.card .card-body { padding: 20px; }
+.card .card-title { margin-bottom: 6px; }
+
+/* Compact mode for task forms and cards */
+.compact-form .card-body, .task-card .card-body { padding: 12px; }
+.compact-form .form-label, .task-card .form-label { font-size: 0.85rem; margin-bottom: 6px; color: var(--muted); }
+.compact-form .form-control, .compact-form .form-select, .compact-form textarea.form-control { padding: 6px 10px; font-size: 0.9rem; }
+.compact-form textarea.form-control { height: 72px; }
+.compact-form .btn { padding: 6px 10px; font-size: 0.9rem; }
+.task-card { border-radius: 12px; }
+.task-card .card-title { font-size: 0.98rem; margin-bottom:4px; }
+.task-card .task-meta { font-size: 0.78rem; }
+.task-card .card-text { font-size: 0.94rem; color: #333333; }
+.task-card .btn { padding: 4px 8px; font-size: 0.82rem; }
+
+/* Slightly tighter grid spacing */
+.row.g-4 { gap: 12px; }
+
+/* Dashboard fixed wrapper */
+.dashboard-wrapper { max-width: 1100px; margin: 0 auto; }
+.dashboard-content { height: calc(100vh - 220px); overflow-y: auto; padding-right: 8px; }
+
+/* Ensure grid displays up to 6 items per page: two columns x three rows */
+.row.row-cols-md-2 { grid-auto-rows: 1fr; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(120px, auto); gap: 16px; }
+
+@media (max-width: 768px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dashboard-content { height: calc(100vh - 200px); }
+}
+
+/* Card and button transitions */
+.card { transition: none; }
+.card:hover { transform: none; box-shadow: none; }
+.btn { transition: none; }
+.btn:active { transform: none; }
+.card:focus-within { box-shadow: none; }
+.page-link { transition: background-color 120ms ease, color 120ms ease; }
+
+/* Tabs and buttons */
+.nav-tabs .nav-link { color: var(--muted); }
+.nav-tabs .nav-link.active { color: #fff; background: transparent; border-bottom: 2px solid var(--accent); }
+
+/* Fixed pagination at bottom */
+/* Fixed, centered pagination that's clearly visible and responsive */
+.fixed-pagination { position: fixed; left: 50%; transform: translateX(-50%); bottom: 28px; pointer-events: auto; z-index: 1200; }
+.fixed-pagination nav { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; align-items: center; }
+.fixed-pagination .pagination { background: #ffffff; padding: 8px; border-radius: 999px; display:flex; gap:10px; align-items:center; }
+.fixed-pagination .page-link { color: var(--text); padding: 10px 14px; border-radius: 8px; margin: 0 2px; display:inline-flex; align-items:center; justify-content:center; background: #ffffff; border: 1px solid rgba(0,0,0,0.06); }
+.fixed-pagination .page-item.active .page-link { background: var(--text); color: #ffffff; border-radius: 6px; }
+.fixed-pagination .page-link:focus { outline: 2px solid rgba(110,168,254,0.18); outline-offset: 2px; }
+
+@media (max-width: 576px) {
+  .fixed-pagination { bottom: 86px; }
+  .fixed-pagination .pagination { width: calc(100% - 32px); justify-content: center; padding: 6px; }
+  .fixed-pagination .page-link { padding: 10px 8px; flex: 1 1 auto; }
+}
+
+/* Add bottom space to content so fixed pagination never overlaps */
+.app-container { padding-bottom: 140px; }
+
+/* Dashboard hero and search/table styling */
+.dashboard-hero { padding-top: 18px; padding-bottom: 18px; }
+.dashboard-hero h1 { font-size: 1.9rem; font-weight: 700; }
+.dashboard-hero p { color: var(--muted); margin-top: 6px; }
+.search-row .input-group .form-control { min-width: 420px; }
+.table-card { border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); }
+.table-card .table { margin-bottom: 0; }
+.table-card .table thead th { font-weight: 700; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.table-card .table tbody td { vertical-align: middle; padding-top: 14px; padding-bottom: 14px; }
+.table-card .table thead th { padding-top: 16px; padding-bottom: 16px; }
+
+.card.p-4 { padding: 28px; }
+
+.pagination { gap: 8px; }
+.pagination .page-link { border-radius: 8px; padding: 8px 12px; }
+.pagination .page-item.active .page-link { background: var(--text); color: #fff; }
+
+@media (max-width: 768px) {
+  .search-row { flex-direction: column; gap: 12px; }
+  .search-row .input-group .form-control { min-width: auto; }
+}
+
+/* Fixed footer */
+footer {
+  background: transparent;
+  border-top: 1px solid rgba(255,255,255,0.02);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+}
+footer .container { max-width: 1100px; display:flex; justify-content:center; align-items:center; padding: 8px 16px; }
+
+/* Footer pagination styles (pagination placed inside footer) */
+.footer-pagination .pagination { background: #ffffff; padding: 6px; border-radius: 999px; display:flex; gap:10px; align-items:center; }
+.footer-pagination .page-link { color: var(--text); padding: 8px 12px; border-radius: 6px; margin: 0 2px; display:inline-flex; align-items:center; justify-content:center; background: #ffffff; border: 1px solid rgba(0,0,0,0.06); }
+.footer-pagination .page-item.active .page-link { background: var(--text); color: #ffffff; }
+
+/* Remove duplicate override for .fixed-pagination (was conflicting after header removal) */
+
+/* Add safe-area padding for mobile devices */
+body { padding-bottom: env(safe-area-inset-bottom, 20px); }
+
+/* Utility */
+.muted { color: var(--muted); }
+.text-accent { color: var(--accent); }
+
+/* Small screens: increase padding for comfortable tap targets */
+@media (max-width: 576px) {
+  .form-card { padding: 20px; }
+  .card .card-body { padding: 16px; }
+}
+
+/* Minimal alert tints for a white UI */
+.alert-danger { background: rgba(0,0,0,0.04); color: #2b2b2b; border: 1px solid rgba(0,0,0,0.06); }
+.alert-success { background: rgba(0,0,0,0.04); color: #2b2b2b; border: 1px solid rgba(0,0,0,0.06); }
+
