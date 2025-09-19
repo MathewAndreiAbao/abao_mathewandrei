@@ -158,6 +158,19 @@ class Router
      */
     public function match($url, $callback, $methods)
     {
+        // Support both calling conventions:
+        // 1) match($url, $callback, $methods)
+        // 2) match($methods_array, $url, $callback)  <-- some route files use this order
+        if (is_array($url) && is_string($callback) && is_string($methods)) {
+            // likely the caller used the alternate order: methods array first
+            $tmp_methods = $url;
+            $tmp_url = $callback;
+            $tmp_callback = $methods;
+            $url = $tmp_url;
+            $callback = $tmp_callback;
+            $methods = $tmp_methods;
+        }
+
         $this->add_route($url, $callback, $methods);
         return $this;
     }
@@ -172,9 +185,22 @@ class Router
      */
     private function add_route($url, $callback, $method = 'GET', $name = NULL)
     {
-		if (strpos($url, '/') !== 0) {
-			$url = '/' . $url;
-		}
+        // support passing an array of urls
+        if (is_array($url)) {
+            foreach ($url as $u) {
+                $this->add_route($u, $callback, $method, $name);
+            }
+            return;
+        }
+
+        // ensure url is a string before using strpos
+        if (!is_string($url)) {
+            $url = (string) $url;
+        }
+
+        if (strpos($url, '/') !== 0) {
+            $url = '/' . $url;
+        }
 
         if(is_string($method)) {
             $methods = explode('|', strtoupper($method));
