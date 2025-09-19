@@ -40,21 +40,19 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 | -------------------------------------------------------------------
 | Here is where you can register web routes for your application.
 |
-|
 */
 
-$router->match(['get','post'], '/', 'AuthController::login');
+// Home route (login page)
+$router->match(['get', 'post'], '/', 'AuthController::login');
 
-// Auth
-$router->match(['get','post'], '/auth/signup', 'AuthController::signup');
-$router->match(['get','post'], '/auth/login', 'AuthController::login');
+// Authentication routes
+$router->match(['get', 'post'], '/auth/signup', 'AuthController::signup');
+$router->match(['get', 'post'], '/auth/login', 'AuthController::login');
 $router->get('/auth/logout', 'AuthController::logout');
 
-// Tasks
+// Task routes
 $router->get('/tasks', 'TaskController::index');
-$router->match(['get','post'], '/tasks/create', 'TaskController::create');
+$router->match(['get', 'post'], '/tasks/create', 'TaskController::create');
 $router->get('/tasks/view/{id}', 'TaskController::view')->where_number('id');
-$router->get('/tasks/view', 'TaskController::view');
-$router->match(['get','post'], '/tasks/edit/{id}', 'TaskController::edit')->where_number('id');
-$router->match(['get','post'], '/tasks/edit', 'TaskController::edit');
+$router->match(['get', 'post'], '/tasks/edit/{id}', 'TaskController::edit')->where_number('id');
 $router->post('/tasks/delete/{id}', 'TaskController::delete')->where_number('id');
