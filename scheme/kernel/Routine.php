@@ -152,7 +152,7 @@ if ( ! function_exists('_shutdown_handler'))
 {
 	/**
 	 * For Debugging
-	 * @return string
+	 * @return void
 	 */
 	function _shutdown_handler()
 	{
@@ -162,15 +162,17 @@ if ( ! function_exists('_shutdown_handler'))
 		{
 			_error_handler($last_error['type'], $last_error['message'], $last_error['file'], $last_error['line']);
 		}
+		// explicit void return
+		return;
 	}
 }
 
 if ( ! function_exists('_exception_handler'))
 {
 	/**
-	 * For Debgging
+	 * For Debugging
 	 * @param  object $e
-	 * @return string
+	 * @return void
 	 */
 	function _exception_handler($e)
 	{
@@ -179,12 +181,12 @@ if ( ! function_exists('_exception_handler'))
 			$logger =& load_class('logger', 'kernel');
 			$logger->log('error', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine());
 		}
-		if(strtolower(config_item('ENVIRONMENT') == 'development'))
+		if(is_string(config_item('ENVIRONMENT')) && strtolower(config_item('ENVIRONMENT')) === 'development')
 		{
 			$exception =& load_class('Errors', 'kernel');
 			$exception->show_exception($e);
 		}
-		
+		return;
 	}
 }
 
@@ -196,7 +198,7 @@ if ( ! function_exists('_error_handler'))
 	 * @param  string $errstr
 	 * @param  string $errfile
 	 * @param  string $errline
-	 * @return string
+	 * @return void
 	 */
 	function _error_handler($severity, $errstr, $errfile, $errline)
 	{
@@ -227,10 +229,13 @@ if ( ! function_exists('_error_handler'))
 			$logger->log('error', $severity_name, $errstr, $errfile, $errline);
 		}
 
-		if (strtolower(config_item('ENVIRONMENT')) == 'development') { 
+		if (is_string(config_item('ENVIRONMENT')) && strtolower(config_item('ENVIRONMENT')) === 'development') {
 			$error =& load_class('Errors', 'kernel');
 			$error->show_php_error($severity_name, $errstr, $errfile, $errline);
 		}
+
+		// explicit void return
+		return;
 	}
 }
 
@@ -239,7 +244,7 @@ if ( ! function_exists('get_config'))
 	/**
 	 * To access config from config config/config.php
 	 *
-	 * @return void
+	 * @return array|null
 	 */
 	function &get_config()
 	{
@@ -290,7 +295,7 @@ if ( ! function_exists('autoload_config'))
 	/**
 	 * To access config from config config/autoload.php
 	 *
-	 * @return void
+	 * @return array|null
 	 */
 	function &autoload_config()
 	{
@@ -319,7 +324,7 @@ if ( ! function_exists('database_config'))
 	/**
 	 * To access config from config config/database.php
 	 *
-	 * @return void
+	 * @return array|null
 	 */
 	function &database_config()
 	{
@@ -348,7 +353,7 @@ if ( ! function_exists('route_config'))
 	/**
 	 * To access config from config config/routes.php
 	 *
-	 * @return void
+	 * @return array|null
 	 */
 	function &route_config()
 	{
